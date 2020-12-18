@@ -15,13 +15,5 @@
 
   roles:
   - role: mafalb.squid.server
-  - role: mafalb.bind.named
-    bind_option_recursion: 'yes'
-    bind_option_allow_query:
-    - localnets
-    bind_option_listen_on:
-    - any
-    bind_option_listen_on_v6:
-    - any
 
 ...
