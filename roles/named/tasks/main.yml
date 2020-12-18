@@ -1,0 +1,33 @@
+#! vim: ft=yaml ts=2 expandtab:
+---
+
+- name: assert
+  assert:
+    that:
+    - ansible_os_family in ["RedHat","Debian"]
+
+- name: set OS specific variables
+  include_vars:
+    file: "{{ ansible_os_family }}.yml"
+
+- name: bind is installed
+  package:
+    name: "{{ bind.packagename }}"
+    state: present
+
+- name: main configuration for bind does exist
+  template:
+    src: named.conf-{{ ansible_os_family }}.j2
+    dest: "{{ bind.etcdir }}/named.conf"
+    mode: 00644
+    backup: true
+    validate: named-checkconf %s
+  notify: reload bind
+
+- name: bind is running
+  service:
+    name: "{{ bind.service }}"
+    state: started
+    enabled: true
+
+...

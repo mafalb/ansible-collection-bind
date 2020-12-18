@@ -1,0 +1,4 @@
+{% for server in groups.dns_group %}
+nameserver {{ hostvars[server].ansible_default_ipv4.address }}
+{% endfor %}
+options ndots:0

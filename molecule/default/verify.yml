@@ -1,0 +1,20 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: verify resolver
+  hosts: ci_client
+
+  tasks:
+
+  - name: can resolve names
+    command: host www.google.at
+    changed_when: false
+
+  - name: get content from resolv.conf
+    command: cat /etc/resolv.conf
+    register: _resolv_conf
+    changed_when: false
+
+  - debug: var=_resolv_conf
+
+...

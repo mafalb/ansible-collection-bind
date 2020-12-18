@@ -1,0 +1,110 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+dependency:
+  name: galaxy
+
+driver:
+  name: docker
+
+lint: |
+  set -e
+  ! grep -r "no_log: false" .
+  yamllint .
+  ansible-lint -v
+  ansible-lint roles/*/vars/*.yml
+  flake8 -v
+
+platforms:
+- name: ci_${CI_CONTAINER_IMAGE:-centos}${CI_CONTAINER_TAG:-7}
+  image: ${CI_CONTAINER_IMAGE:-centos}:${CI_CONTAINER_TAG:-7}
+  command: /lib/systemd/systemd
+  docker_networks:
+  - name: molecule-internal
+    enable_ipv6: true
+    ipam_config:
+    - subnet: 10.92.185.144/28
+    - subnet: fd5d:5ff6:1632:1::/64
+    internal: true
+  networks:
+  - name: molecule-internal
+    ipv4_address: 10.92.185.146
+    ipv6_address: fd5d:5ff6:1632:1::2
+  - name: molecule-external
+  volumes:
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+  - /tmp
+  - /run
+  - /run/lock
+  capabilities:
+  - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  tty: true
+  groups:
+  - dns_group
+
+- name: ci_client
+  image: ${CI_CONTAINER_IMAGE:-centos}:${CI_CONTAINER_TAG:-7}
+  command: /lib/systemd/systemd
+  networks:
+  - name: molecule-internal
+    ipv4_address: 10.92.185.147
+    ipv6_address: fd5d:5ff6:1632:1::3
+  dns_servers:
+  - fd5d:5ff6:1632:1::2
+  - 10.92.185.146
+  volumes:
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+  - /tmp
+  - /run
+  - /run/lock
+  capabilities:
+  - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  tty: true
+  groups:
+  - client_group
+
+- name: ci_proxy
+  image: centos:8
+  command: /lib/systemd/systemd
+  networks:
+  - name: molecule-internal
+  - name: molecule-external
+  volumes:
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+  - /tmp
+  - /run
+  - /run/lock
+  capabilities:
+  - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  tty: true
+  groups:
+  - infrastructure_group
+  - proxy_group
+
+provisioner:
+  name: ansible
+  ansible_args:
+    - --tags=all,debug
+    - --diff
+  config_options:
+    defaults:
+      gathering: smart
+      interpreter_python: auto
+  lint:
+    name: ansible-lint
+
+verifier:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+...

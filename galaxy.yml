@@ -1,0 +1,26 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+namespace: mafalb
+name: bind
+version: 0.0.1
+readme: README.md
+
+authors: []
+
+description: Ansible collection bind
+
+license:
+- GPL-3.0-or-later
+
+tags:
+- bind
+
+dependencies: {}
+
+repository: https://github.com/mafalb/ansible-collection-bind
+documentation: https://github.com/mafalb/ansible-collection-bind
+homepage: https://github.com/mafalb/ansible-collection-bind
+issues: https://github.com/mafalb/ansible-collection-bind/issues
+
+...
