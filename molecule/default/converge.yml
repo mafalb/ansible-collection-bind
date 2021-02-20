@@ -19,7 +19,7 @@
   hosts: client_group
 
   environment:
-    http_proxy: http://ci_proxy:3128
+    http_proxy: http://ci-proxy:3128
 
   tasks:
 

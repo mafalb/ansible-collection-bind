@@ -2,7 +2,7 @@
 ---
 
 - name: verify resolver
-  hosts: ci_client
+  hosts: ci-client
 
   tasks:
 
