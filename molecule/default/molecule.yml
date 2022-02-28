@@ -69,26 +69,26 @@ platforms:
     groups:
     - client_group
 
-- name: ci-proxy
-  image: quay.io/rockylinux/rockylinux:8
-  command: /lib/systemd/systemd
-  networks:
-    - name: molecule-internal
-    - name: molecule-external
-  volumes:
-    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-    - /tmp
-    - /run
-    - /run/lock
-  capabilities:
-    - SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
-  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
-  tty: true
-  groups:
-    - infrastructure_group
-    - proxy_group
+  - name: ci-proxy
+    image: quay.io/rockylinux/rockylinux:8
+    command: /lib/systemd/systemd
+    networks:
+      - name: molecule-internal
+      - name: molecule-external
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+    pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+    tty: true
+    groups:
+      - infrastructure_group
+      - proxy_group
 
 provisioner:
   name: ansible
