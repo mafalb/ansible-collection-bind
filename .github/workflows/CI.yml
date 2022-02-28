@@ -42,8 +42,6 @@ jobs:
     env:
       
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
-      CI_CONTAINER_IMAGE: ${{ matrix.distribution }}
-      CI_CONTAINER_TAG: ${{ matrix.version }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
       
@@ -72,6 +70,6 @@ jobs:
     - name: molecule tests
       run: |
         source ~/.virtualenvs/molecule/bin/activate
-        molecule test
+        molecule -e .env-${target}.yml test
 
 ...

@@ -16,79 +16,79 @@ lint: |
   flake8 -v
 
 platforms:
-- name: ci-${CI_CONTAINER_IMAGE:-centos}${CI_CONTAINER_TAG:-7}
-  image: ${CI_CONTAINER_IMAGE:-centos}:${CI_CONTAINER_TAG:-7}
-  command: /lib/systemd/systemd
-  docker_networks:
-  - name: molecule-internal
-    enable_ipv6: true
-    ipam_config:
-    - subnet: 10.92.185.144/28
-    - subnet: fd5d:5ff6:1632:1::/64
-    internal: true
-  networks:
-  - name: molecule-internal
-    ipv4_address: 10.92.185.146
-    ipv6_address: fd5d:5ff6:1632:1::2
-  - name: molecule-external
-  volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
-  capabilities:
-  - SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
-  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
-  tty: true
-  groups:
-  - dns_group
-
-- name: ci-client
-  image: ${CI_CONTAINER_IMAGE:-centos}:${CI_CONTAINER_TAG:-7}
-  command: /lib/systemd/systemd
-  networks:
-  - name: molecule-internal
-    ipv4_address: 10.92.185.147
-    ipv6_address: fd5d:5ff6:1632:1::3
-  dns_servers:
-  - fd5d:5ff6:1632:1::2
-  - 10.92.185.146
-  volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
-  capabilities:
-  - SYS_ADMIN
-  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
-  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
-  tty: true
-  groups:
-  - client_group
+  - name: ${CI_HOSTNAME}
+    image: ${CI_IMAGE}
+    command: /lib/systemd/systemd
+    docker_networks:
+      - name: molecule-internal
+        enable_ipv6: true
+        ipam_config:
+          - subnet: 10.92.185.144/28
+          - subnet: fd5d:5ff6:1632:1::/64
+        internal: true
+    networks:
+      - name: molecule-internal
+        ipv4_address: 10.92.185.146
+        ipv6_address: fd5d:5ff6:1632:1::2
+      - name: molecule-external
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+      - /tmp
+      - /run
+      - /run/lock
+    capabilities:
+      - SYS_ADMIN
+    privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+    pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+    tty: true
+    groups:
+      - dns_group
+  
+  - name: ci-client
+    image: ${CI_IMAGE}
+    command: /lib/systemd/systemd
+    networks:
+    - name: molecule-internal
+      ipv4_address: 10.92.185.147
+      ipv6_address: fd5d:5ff6:1632:1::3
+    dns_servers:
+    - fd5d:5ff6:1632:1::2
+    - 10.92.185.146
+    volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    tmpfs:
+    - /tmp
+    - /run
+    - /run/lock
+    capabilities:
+    - SYS_ADMIN
+    privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+    pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+    tty: true
+    groups:
+    - client_group
 
 - name: ci-proxy
-  image: centos:8
+  image: quay.io/rockylinux/rockylinux:8
   command: /lib/systemd/systemd
   networks:
-  - name: molecule-internal
-  - name: molecule-external
+    - name: molecule-internal
+    - name: molecule-external
   volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   tmpfs:
-  - /tmp
-  - /run
-  - /run/lock
+    - /tmp
+    - /run
+    - /run/lock
   capabilities:
-  - SYS_ADMIN
+    - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   tty: true
   groups:
-  - infrastructure_group
-  - proxy_group
+    - infrastructure_group
+    - proxy_group
 
 provisioner:
   name: ansible
