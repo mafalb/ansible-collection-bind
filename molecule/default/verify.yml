@@ -11,6 +11,7 @@
     loop:
       - 10.92.185.146
       - fd5d:5ff6:1632:1::2
+    changed_when: false
 
   - name: can resolve names
     command: host www.google.at
