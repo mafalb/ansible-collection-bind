@@ -3,16 +3,15 @@
 
 - name: Install bind named
   hosts: dns_group
-
   roles:
   - role: mafalb.bind.named
     bind_option_recursion: 'yes'
     bind_option_allow_query:
-    - localnets
+        - localnets
     bind_option_listen_on:
-    - any
+        - any
     bind_option_listen_on_v6:
-    - any
+        - any
 
 
 - name: prepare client for CI
@@ -20,6 +19,7 @@
 
   environment:
     http_proxy: http://ci-proxy:3128
+    https_proxy: http://ci-proxy:3128
 
   tasks:
 

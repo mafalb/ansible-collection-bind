@@ -6,15 +6,14 @@
 
   tasks:
 
+  - name: our nameservers are present
+    command: grep "nameserver {{ item }}" /etc/resolv.conf
+    loop:
+      - 10.92.185.146
+      - fd5d:5ff6:1632:1::2
+
   - name: can resolve names
     command: host www.google.at
     changed_when: false
-
-  - name: get content from resolv.conf
-    command: cat /etc/resolv.conf
-    register: _resolv_conf
-    changed_when: false
-
-  - debug: var=_resolv_conf
 
 ...
