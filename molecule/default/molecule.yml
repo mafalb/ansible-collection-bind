@@ -80,7 +80,7 @@ platforms:
     - 10.92.185.146
     etc_hosts:
       ci-proxy: '10.92.185.147'
-      ci-proxy: 'fd5d:5ff6:1632:1::3'
+      ci-proxy6: 'fd5d:5ff6:1632:1::3'
     volumes:
     - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
     - "${MOLECULE_SCENARIO_DIRECTORY}/files/resolv.conf:/etc/resolv.conf"
