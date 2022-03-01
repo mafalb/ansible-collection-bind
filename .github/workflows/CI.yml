@@ -75,6 +75,6 @@ jobs:
     - name: molecule tests
       run: |
         source ~/.virtualenvs/molecule/bin/activate
-        molecule -e .env-${{ target }}.yml test
+        molecule -e .env-${{ matrix.target }}.yml test
 
 ...
